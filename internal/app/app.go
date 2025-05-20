@@ -9,12 +9,10 @@ import (
 
 	"github.com/evrone/go-clean-template/config"
 	amqprpc "github.com/evrone/go-clean-template/internal/controller/amqp_rpc"
-	"github.com/evrone/go-clean-template/internal/controller/grpc"
 	"github.com/evrone/go-clean-template/internal/controller/http"
 	"github.com/evrone/go-clean-template/internal/repo/persistent"
 	"github.com/evrone/go-clean-template/internal/repo/webapi"
 	"github.com/evrone/go-clean-template/internal/usecase/translation"
-	"github.com/evrone/go-clean-template/pkg/grpcserver"
 	"github.com/evrone/go-clean-template/pkg/httpserver"
 	"github.com/evrone/go-clean-template/pkg/logger"
 	"github.com/evrone/go-clean-template/pkg/postgres"
@@ -46,9 +44,6 @@ func Run(cfg *config.Config) {
 		l.Fatal(fmt.Errorf("app - Run - rmqServer - server.New: %w", err))
 	}
 
-	// gRPC Server
-	grpcServer := grpcserver.New(grpcserver.Port(cfg.GRPC.Port))
-	grpc.NewRouter(grpcServer.App, translationUseCase, l)
 
 	// HTTP Server
 	httpServer := httpserver.New(httpserver.Port(cfg.HTTP.Port), httpserver.Prefork(cfg.HTTP.UsePreforkMode))
@@ -56,7 +51,6 @@ func Run(cfg *config.Config) {
 
 	// Start servers
 	rmqServer.Start()
-	grpcServer.Start()
 	httpServer.Start()
 
 	// Waiting signal
@@ -68,8 +62,6 @@ func Run(cfg *config.Config) {
 		l.Info("app - Run - signal: %s", s.String())
 	case err = <-httpServer.Notify():
 		l.Error(fmt.Errorf("app - Run - httpServer.Notify: %w", err))
-	case err = <-grpcServer.Notify():
-		l.Error(fmt.Errorf("app - Run - grpcServer.Notify: %w", err))
 	case err = <-rmqServer.Notify():
 		l.Error(fmt.Errorf("app - Run - rmqServer.Notify: %w", err))
 	}
@@ -80,10 +72,6 @@ func Run(cfg *config.Config) {
 		l.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
 	}
 
-	err = grpcServer.Shutdown()
-	if err != nil {
-		l.Error(fmt.Errorf("app - Run - grpcServer.Shutdown: %w", err))
-	}
 
 	err = rmqServer.Shutdown()
 	if err != nil {
