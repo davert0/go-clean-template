@@ -6,9 +6,8 @@ import "time"
 
 // Comment -.
 type Comment struct {
-	Text       string    `json:"text"        example:"good job"`
-	CreatedBy  string    `json:"created_by"  example:"user_kek"`
-	CreatedAt  time.Time `json:"created_at"  example:"2025-06-15T12:34:56Z"`
-	EntityID   string    `json:"entity_id"       example:"shot_12"`
-	EntityType string    `json:"entity_type"     example:"shot"`
+	EntityRefID   int64     `json:"entity_ref_id"`
+	Text          string    `json:"text"`
+	CreatedBy     string    `json:"created_by"`
+	CreatedAt     time.Time `json:"created_at"`
 }

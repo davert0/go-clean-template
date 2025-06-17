@@ -17,7 +17,7 @@ type (
 	}
 
 	Comment interface {
-		Comment(context.Context, entity.Comment) (entity.Comment, error)
+		Comment(context.Context, entity.Comment, entity.Entity) (entity.Comment, error)
 		History(context.Context) (entity.CommentsHistory, error)
 	}
 )

@@ -42,28 +42,26 @@ func (r *V2) comments(ctx *fiber.Ctx) error {
 // @Router      /translation/do-translate [post]
 func (r *V2) doComment(ctx *fiber.Ctx) error {
 	var body request.Comment
-	fmt.Println(string(ctx.Body()))
 
 	if err := ctx.BodyParser(&body); err != nil {
 		r.l.Error(err, "http - v1 - doTranslate")
 
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}
-	fmt.Println(body)
 
 	if err := r.v.Struct(body); err != nil {
 		r.l.Error(err, "http - v1 - doTranslate")
 
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}
-	fmt.Println(body)
 
 	comment, err := r.t.Comment(
 		ctx.UserContext(),
 		entity.Comment{
-			Text:       body.Text,
-			CreatedBy:  body.CreatedBy,
-			CreatedAt:  body.CreatedAt,
+			Text:      body.Text,
+			CreatedBy: body.CreatedBy,
+		},
+		entity.Entity{
 			EntityID:   body.EntityID,
 			EntityType: body.EntityType,
 		},

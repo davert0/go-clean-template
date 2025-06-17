@@ -4,6 +4,6 @@ package entity
 
 // Comment -.
 type Entity struct {
-	EntityID   string `json:"entity_id"       example:"shot_12"`
-	EntityType string `json:"entity_type"     example:"shot"`
+	EntityID   string `json:"entity_id"`
+	EntityType string `json:"entity_type"`
 }

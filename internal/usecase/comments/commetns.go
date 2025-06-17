@@ -31,8 +31,8 @@ func (uc *UseCase) History(ctx context.Context) (entity.CommentsHistory, error) 
 }
 
 // Comment -.
-func (uc *UseCase) Comment(ctx context.Context, c entity.Comment) (entity.Comment, error) {
-	comment, err := uc.repo.DoComment(ctx, c)
+func (uc *UseCase) Comment(ctx context.Context, c entity.Comment, e entity.Entity) (entity.Comment, error) {
+	comment, err := uc.repo.DoComment(ctx, c, e)
 	if err != nil {
 		return entity.Comment{}, fmt.Errorf("CommentUseCase - Comment - DoComment: %w", err)
 	}

@@ -27,6 +27,6 @@ type (
 	CommentsRepo interface {
 		Store(context.Context, entity.Comment) error
 		GetComments(context.Context) ([]entity.Comment, error)
-		DoComment(context.Context, entity.Comment) (entity.Comment, error)
+		DoComment(context.Context, entity.Comment, entity.Entity) (entity.Comment, error)
 	}
 )
