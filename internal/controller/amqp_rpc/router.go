@@ -8,7 +8,7 @@ import (
 )
 
 // NewRouter -.
-func NewRouter(t usecase.Translation, l logger.Interface) map[string]server.CallHandler {
+func NewRouter(t usecase.Comment, l logger.Interface) map[string]server.CallHandler {
 	routes := make(map[string]server.CallHandler)
 
 	{

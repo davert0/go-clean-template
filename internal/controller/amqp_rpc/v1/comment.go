@@ -8,7 +8,7 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-func (r *V1) getHistory() server.CallHandler {
+func (r *V1) getComments() server.CallHandler {
 	return func(_ *amqp.Delivery) (interface{}, error) {
 		translationHistory, err := r.t.History(context.Background())
 		if err != nil {
