@@ -74,8 +74,8 @@ func Run(cfg *config.Config) {
 		l.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
 	}
 
-	// err = rmqServer.Shutdown()
-	// if err != nil {
-	// 	l.Error(fmt.Errorf("app - Run - rmqServer.Shutdown: %w", err))
-	// }
+	err = rmqServer.Shutdown()
+	if err != nil {
+		l.Error(fmt.Errorf("app - Run - rmqServer.Shutdown: %w", err))
+	}
 }
