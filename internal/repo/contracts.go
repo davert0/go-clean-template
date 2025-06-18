@@ -11,19 +11,6 @@ import (
 
 type (
 	// TranslationRepo -.
-	TranslationRepo interface {
-		Store(context.Context, entity.Translation) error
-		GetHistory(context.Context) ([]entity.Translation, error)
-	}
-
-	// TranslationWebAPI -.
-	TranslationWebAPI interface {
-		Translate(entity.Translation) (entity.Translation, error)
-	}
-)
-
-type (
-	// TranslationRepo -.
 	CommentsRepo interface {
 		Store(context.Context, entity.Comment) error
 		GetComments(context.Context) ([]entity.Comment, error)
