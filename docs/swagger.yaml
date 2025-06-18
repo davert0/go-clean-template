@@ -1,25 +1,25 @@
 basePath: /v1
 definitions:
-  entity.Translation:
+  entity.Comment:
     properties:
-      destination:
-        example: en
+      text:
+        example: good
         type: string
-      original:
-        example: текст для перевода
+      created_by:
+        example: boss
         type: string
-      source:
-        example: auto
+      entity_id:
+        example: video_123
         type: string
-      translation:
-        example: text for translation
+      entity_type:
+        example: video
         type: string
     type: object
-  entity.TranslationHistory:
+  entity.CommentHistory:
     properties:
       history:
         items:
-          $ref: '#/definitions/entity.Translation'
+          $ref: '#/definitions/entity.Comment'
         type: array
     type: object
   request.Translate:
@@ -47,7 +47,7 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: Using a translation service as an example
+  description: Using a Comment service as an example
   title: Go Clean Template API
   version: "1.0"
 paths:
@@ -55,22 +55,22 @@ paths:
     post:
       consumes:
       - application/json
-      description: Translate a text
-      operationId: do-translate
+      description: Comment some entity
+      operationId: do-comment
       parameters:
-      - description: Set up translation
+      - description: Set up comment
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/request.Translate'
+          $ref: '#/definitions/request.Comment'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.Translation'
+            $ref: '#/definitions/entity.Comment'
         "400":
           description: Bad Request
           schema:
@@ -79,27 +79,27 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Error'
-      summary: Translate
+      summary: Comment
       tags:
-      - translation
-  /translation/history:
+      - comment
+  /comment/comments:
     get:
       consumes:
       - application/json
-      description: Show all translation history
-      operationId: history
+      description: Show all comments
+      operationId: comments
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.TranslationHistory'
+            $ref: '#/definitions/entity.CommentHistory'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Error'
-      summary: Show history
+      summary: Show comments
       tags:
       - translation
 swagger: "2.0"

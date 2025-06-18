@@ -1,24 +1,24 @@
-package v2
+package v1
 
 import (
 	"fmt"
 	"net/http"
 
-	"github.com/evrone/go-clean-template/internal/controller/http/v2/request"
+	"github.com/evrone/go-clean-template/internal/controller/http/v1/request"
 	"github.com/evrone/go-clean-template/internal/entity"
 	"github.com/gofiber/fiber/v2"
 )
 
-// @Summary     Show history
-// @Description Show all translation history
-// @ID          history
-// @Tags  	    translation
+// @Summary     Show comments
+// @Description Show all comments
+// @ID          comments
+// @Tags  	    comment
 // @Accept      json
 // @Produce     json
-// @Success     200 {object} entity.TranslationHistory
+// @Success     200 {object} entity.CommentHistory
 // @Failure     500 {object} response.Error
-// @Router      /translation/history [get]
-func (r *V2) comments(ctx *fiber.Ctx) error {
+// @Router      /comment/comments [get]
+func (r *V1) comments(ctx *fiber.Ctx) error {
 	translationHistory, err := r.t.History(ctx.UserContext())
 	if err != nil {
 		r.l.Error(err, "http - v2 - comments")
@@ -29,28 +29,28 @@ func (r *V2) comments(ctx *fiber.Ctx) error {
 	return ctx.Status(http.StatusOK).JSON(translationHistory)
 }
 
-// @Summary     Translate
-// @Description Translate a text
-// @ID          do-translate
-// @Tags  	    translation
+// @Summary     Comment
+// @Description Comment a entity
+// @ID          do-comment
+// @Tags  	    comment
 // @Accept      json
 // @Produce     json
-// @Param       request body request.Translate true "Set up translation"
-// @Success     200 {object} entity.Translation
+// @Param       request body request.Comment true "Set up comment"
+// @Success     200 {object} entity.Comment
 // @Failure     400 {object} response.Error
 // @Failure     500 {object} response.Error
-// @Router      /translation/do-translate [post]
-func (r *V2) doComment(ctx *fiber.Ctx) error {
+// @Router      /comments/do-comment [post]
+func (r *V1) doComment(ctx *fiber.Ctx) error {
 	var body request.Comment
 
 	if err := ctx.BodyParser(&body); err != nil {
-		r.l.Error(err, "http - v1 - doTranslate")
+		r.l.Error(err, "http - v1 - doComment")
 
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}
 
 	if err := r.v.Struct(body); err != nil {
-		r.l.Error(err, "http - v1 - doTranslate")
+		r.l.Error(err, "http - v1 - doComment")
 
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}

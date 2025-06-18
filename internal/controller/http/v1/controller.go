@@ -1,4 +1,4 @@
-package v2
+package v1
 
 import (
 	"github.com/evrone/go-clean-template/internal/usecase"
@@ -6,8 +6,8 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-// V2 -.
-type V2 struct {
+// V1 -.
+type V1 struct {
 	t usecase.Comment
 	l logger.Interface
 	v *validator.Validate

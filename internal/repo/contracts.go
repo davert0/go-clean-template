@@ -7,8 +7,6 @@ import (
 	"github.com/evrone/go-clean-template/internal/entity"
 )
 
-//go:generate mockgen -source=contracts.go -destination=../usecase/mocks_repo_test.go -package=usecase_test
-
 type (
 	// TranslationRepo -.
 	CommentsRepo interface {

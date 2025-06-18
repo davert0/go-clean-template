@@ -29,12 +29,6 @@ func Run(cfg *config.Config) {
 	}
 	defer pg.Close()
 
-	// // Use-Case
-	// translationUseCase := translation.New(
-	// 	persistent.New(pg),
-	// 	webapi.New(),
-	// )
-
 	commentsUseCase := comments.New(
 		persistent.New(pg),
 	)
@@ -64,8 +58,8 @@ func Run(cfg *config.Config) {
 		l.Info("app - Run - signal: %s", s.String())
 	case err = <-httpServer.Notify():
 		l.Error(fmt.Errorf("app - Run - httpServer.Notify: %w", err))
-		// case err = <-rmqServer.Notify():
-		// 	l.Error(fmt.Errorf("app - Run - rmqServer.Notify: %w", err))
+	case err = <-rmqServer.Notify():
+		l.Error(fmt.Errorf("app - Run - rmqServer.Notify: %w", err))
 	}
 
 	// Shutdown

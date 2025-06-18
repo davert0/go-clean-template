@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Using a translation service as an example",
+        "description": "Using a comment service as an example",
         "title": "Go Clean Template API",
         "contact": {},
         "version": "1.0"
@@ -9,9 +9,9 @@
     "host": "localhost:8080",
     "basePath": "/v1",
     "paths": {
-        "/translation/do-translate": {
+        "/comment/do-comment": {
             "post": {
-                "description": "Translate a text",
+                "description": "Comment some entity",
                 "consumes": [
                     "application/json"
                 ],
@@ -19,18 +19,18 @@
                     "application/json"
                 ],
                 "tags": [
-                    "translation"
+                    "comment"
                 ],
-                "summary": "Translate",
-                "operationId": "do-translate",
+                "summary": "Comment",
+                "operationId": "do-comment",
                 "parameters": [
                     {
-                        "description": "Set up translation",
+                        "description": "Set up comment",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.Translate"
+                            "$ref": "#/definitions/request.Comment"
                         }
                     }
                 ],
@@ -38,7 +38,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Translation"
+                            "$ref": "#/definitions/entity.Comment"
                         }
                     },
                     "400": {
@@ -56,9 +56,9 @@
                 }
             }
         },
-        "/translation/history": {
+        "/comment/comments": {
             "get": {
-                "description": "Show all translation history",
+                "description": "Show all comments",
                 "consumes": [
                     "application/json"
                 ],
@@ -66,15 +66,15 @@
                     "application/json"
                 ],
                 "tags": [
-                    "translation"
+                    "comment"
                 ],
-                "summary": "Show history",
-                "operationId": "history",
+                "summary": "Show all comments",
+                "operationId": "comment",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.TranslationHistory"
+                            "$ref": "#/definitions/entity.CommentHistory"
                         }
                     },
                     "500": {
@@ -88,34 +88,34 @@
         }
     },
     "definitions": {
-        "entity.Translation": {
+        "entity.Comment": {
             "type": "object",
             "properties": {
-                "destination": {
+                "text": {
                     "type": "string",
-                    "example": "en"
+                    "example": "good job"
                 },
-                "original": {
+                "created_by": {
                     "type": "string",
-                    "example": "текст для перевода"
+                    "example": "boss"
                 },
-                "source": {
-                    "type": "string",
-                    "example": "auto"
+                "created_at": {
+                    "type": "time",
+                    "example": "2025...."
                 },
-                "translation": {
-                    "type": "string",
-                    "example": "text for translation"
+                "entity_ref_id": {
+                    "type": "bigint",
+                    "example": "12"
                 }
             }
         },
-        "entity.TranslationHistory": {
+        "entity.CommentHistory": {
             "type": "object",
             "properties": {
-                "history": {
+                "comments": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.Translation"
+                        "$ref": "#/definitions/entity.Comment"
                     }
                 }
             }
@@ -128,9 +128,9 @@
                 "source"
             ],
             "properties": {
-                "destination": {
+                "text": {
                     "type": "string",
-                    "example": "en"
+                    "example": "kek"
                 },
                 "original": {
                     "type": "string",

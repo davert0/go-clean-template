@@ -15,9 +15,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/translation/do-translate": {
+        "/comment/do-comment": {
             "post": {
-                "description": "Translate a text",
+                "description": "Comment some entity",
                 "consumes": [
                     "application/json"
                 ],
@@ -25,18 +25,18 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "translation"
+                    "comment"
                 ],
-                "summary": "Translate",
-                "operationId": "do-translate",
+                "summary": "Comment",
+                "operationId": "do-comment",
                 "parameters": [
                     {
-                        "description": "Set up translation",
+                        "description": "Set up comment",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.Translate"
+                            "$ref": "#/definitions/request.Comment"
                         }
                     }
                 ],
@@ -44,7 +44,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Translation"
+                            "$ref": "#/definitions/entity.Comment"
                         }
                     },
                     "400": {
@@ -62,9 +62,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/translation/history": {
+        "/comment/comments": {
             "get": {
-                "description": "Show all translation history",
+                "description": "Show all comments",
                 "consumes": [
                     "application/json"
                 ],
@@ -72,15 +72,15 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "translation"
+                    "comment"
                 ],
-                "summary": "Show history",
-                "operationId": "history",
+                "summary": "Show all comments",
+                "operationId": "comment",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.TranslationHistory"
+                            "$ref": "#/definitions/entity.CommentHistory"
                         }
                     },
                     "500": {
@@ -94,34 +94,34 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "entity.Translation": {
+        "entity.Comment": {
             "type": "object",
             "properties": {
-                "destination": {
+                "text": {
                     "type": "string",
-                    "example": "en"
+                    "example": "good job"
                 },
-                "original": {
+                "created_by": {
                     "type": "string",
-                    "example": "текст для перевода"
+                    "example": "boss"
                 },
-                "source": {
-                    "type": "string",
-                    "example": "auto"
+                "created_at": {
+                    "type": "time",
+                    "example": "2025...."
                 },
-                "translation": {
-                    "type": "string",
-                    "example": "text for translation"
+                "entity_ref_id": {
+                    "type": "bigint",
+                    "example": "12"
                 }
             }
         },
-        "entity.TranslationHistory": {
+        "entity.CommentHistory": {
             "type": "object",
             "properties": {
-                "history": {
+                "comments": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.Translation"
+                        "$ref": "#/definitions/entity.Comment"
                     }
                 }
             }
@@ -134,9 +134,9 @@ const docTemplate = `{
                 "source"
             ],
             "properties": {
-                "destination": {
+                "text": {
                     "type": "string",
-                    "example": "en"
+                    "example": "kek"
                 },
                 "original": {
                     "type": "string",
@@ -167,7 +167,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/v1",
 	Schemes:          []string{},
 	Title:            "Go Clean Template API",
-	Description:      "Using a translation service as an example",
+	Description:      "Using a comment service as an example",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

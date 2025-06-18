@@ -12,7 +12,7 @@ import (
 
 const _defaultEntityCap = 64
 
-// TranslationRepo -.
+// CommentsRepo -.
 type CommentsRepo struct {
 	*postgres.Postgres
 }
@@ -29,12 +29,12 @@ func (r *CommentsRepo) GetComments(ctx context.Context) ([]entity.Comment, error
 		From("comment").
 		ToSql()
 	if err != nil {
-		return nil, fmt.Errorf("CommentsRepo - GetHistory - r.Builder: %w", err)
+		return nil, fmt.Errorf("CommentsRepo - GetComments - r.Builder: %w", err)
 	}
 
 	rows, err := r.Pool.Query(ctx, sql)
 	if err != nil {
-		return nil, fmt.Errorf("CommentsRepo - GetHistory - r.Pool.Query: %w", err)
+		return nil, fmt.Errorf("CommentsRepo - GetComments - r.Pool.Query: %w", err)
 	}
 	defer rows.Close()
 
@@ -45,7 +45,7 @@ func (r *CommentsRepo) GetComments(ctx context.Context) ([]entity.Comment, error
 
 		err = rows.Scan(&e.EntityRefID, &e.Text, &e.CreatedBy, &e.CreatedAt)
 		if err != nil {
-			return nil, fmt.Errorf("CommentsRepo - GetHistory - rows.Scan: %w", err)
+			return nil, fmt.Errorf("CommentsRepo - GetComments - rows.Scan: %w", err)
 		}
 
 		entities = append(entities, e)

@@ -1,4 +1,4 @@
-package v2
+package v1
 
 import (
 	"github.com/evrone/go-clean-template/internal/usecase"
@@ -9,7 +9,7 @@ import (
 
 // NewTranslationRoutes -.
 func NewTranslationRoutes(apiV2Group fiber.Router, c usecase.Comment, l logger.Interface) {
-	r := &V2{t: c, l: l, v: validator.New(validator.WithRequiredStructEnabled())}
+	r := &V1{t: c, l: l, v: validator.New(validator.WithRequiredStructEnabled())}
 
 	commentGroup := apiV2Group.Group("/comment")
 

@@ -27,7 +27,7 @@ func (uc *UseCase) History(ctx context.Context) (entity.CommentsHistory, error) 
 		return entity.CommentsHistory{}, fmt.Errorf("CommentsUseCase - History - s.repo.GetComments: %w", err)
 	}
 
-	return entity.CommentsHistory{History: comments}, nil
+	return entity.CommentsHistory{Comments: comments}, nil
 }
 
 // Comment -.
