@@ -10,9 +10,8 @@ import (
 //go:generate mockgen -source=interfaces.go -destination=./mocks_usecase_test.go -package=usecase_test
 
 type (
-	// Translation -.
-	Translation interface {
-		Translate(context.Context, entity.Translation) (entity.Translation, error)
-		History(context.Context) (entity.TranslationHistory, error)
+	Comment interface {
+		Comment(context.Context, entity.Comment, entity.Entity) (entity.Comment, error)
+		History(context.Context) (entity.CommentsList, error)
 	}
 )

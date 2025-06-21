@@ -11,8 +11,7 @@ import (
 	amqprpc "github.com/evrone/go-clean-template/internal/controller/amqp_rpc"
 	"github.com/evrone/go-clean-template/internal/controller/http"
 	"github.com/evrone/go-clean-template/internal/repo/persistent"
-	"github.com/evrone/go-clean-template/internal/repo/webapi"
-	"github.com/evrone/go-clean-template/internal/usecase/translation"
+	"github.com/evrone/go-clean-template/internal/usecase/comments"
 	"github.com/evrone/go-clean-template/pkg/httpserver"
 	"github.com/evrone/go-clean-template/pkg/logger"
 	"github.com/evrone/go-clean-template/pkg/postgres"
@@ -30,24 +29,21 @@ func Run(cfg *config.Config) {
 	}
 	defer pg.Close()
 
-	// Use-Case
-	translationUseCase := translation.New(
+	commentsUseCase := comments.New(
 		persistent.New(pg),
-		webapi.New(),
 	)
 
 	// RabbitMQ RPC Server
-	rmqRouter := amqprpc.NewRouter(translationUseCase, l)
+	rmqRouter := amqprpc.NewRouter(commentsUseCase, l)
 
 	rmqServer, err := server.New(cfg.RMQ.URL, cfg.RMQ.ServerExchange, rmqRouter, l)
 	if err != nil {
 		l.Fatal(fmt.Errorf("app - Run - rmqServer - server.New: %w", err))
 	}
 
-
 	// HTTP Server
 	httpServer := httpserver.New(httpserver.Port(cfg.HTTP.Port), httpserver.Prefork(cfg.HTTP.UsePreforkMode))
-	http.NewRouter(httpServer.App, cfg, translationUseCase, l)
+	http.NewRouter(httpServer.App, cfg, commentsUseCase, l)
 
 	// Start servers
 	rmqServer.Start()
@@ -71,7 +67,6 @@ func Run(cfg *config.Config) {
 	if err != nil {
 		l.Error(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
 	}
-
 
 	err = rmqServer.Shutdown()
 	if err != nil {

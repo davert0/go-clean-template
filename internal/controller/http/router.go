@@ -18,11 +18,11 @@ import (
 // NewRouter -.
 // Swagger spec:
 // @title       Go Clean Template API
-// @description Using a translation service as an example
+// @description Using a comment service as an example
 // @version     1.0
 // @host        localhost:8080
 // @BasePath    /v1
-func NewRouter(app *fiber.App, cfg *config.Config, t usecase.Translation, l logger.Interface) {
+func NewRouter(app *fiber.App, cfg *config.Config, t usecase.Comment, l logger.Interface) {
 	// Options
 	app.Use(middleware.Logger(l))
 	app.Use(middleware.Recovery(l))

@@ -15,9 +15,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/translation/do-translate": {
-            "post": {
-                "description": "Translate a text",
+        "/comment/comments": {
+            "get": {
+                "description": "Show all comments",
                 "consumes": [
                     "application/json"
                 ],
@@ -25,18 +25,48 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "translation"
+                    "comment"
                 ],
-                "summary": "Translate",
-                "operationId": "do-translate",
+                "summary": "Show comments",
+                "operationId": "comments",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.CommentsList"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/comments/do-comment": {
+            "post": {
+                "description": "Comment a entity",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "Comment",
+                "operationId": "do-comment",
                 "parameters": [
                     {
-                        "description": "Set up translation",
+                        "description": "Set up comment",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.Translate"
+                            "$ref": "#/definitions/request.Comment"
                         }
                     }
                 ],
@@ -44,7 +74,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Translation"
+                            "$ref": "#/definitions/entity.Comment"
                         }
                     },
                     "400": {
@@ -61,90 +91,61 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/translation/history": {
-            "get": {
-                "description": "Show all translation history",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "translation"
-                ],
-                "summary": "Show history",
-                "operationId": "history",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/entity.TranslationHistory"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Error"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
-        "entity.Translation": {
+        "entity.Comment": {
             "type": "object",
             "properties": {
-                "destination": {
-                    "type": "string",
-                    "example": "en"
+                "created_at": {
+                    "type": "string"
                 },
-                "original": {
-                    "type": "string",
-                    "example": "текст для перевода"
+                "created_by": {
+                    "type": "string"
                 },
-                "source": {
-                    "type": "string",
-                    "example": "auto"
+                "entity_ref_id": {
+                    "type": "integer"
                 },
-                "translation": {
-                    "type": "string",
-                    "example": "text for translation"
+                "text": {
+                    "type": "string"
                 }
             }
         },
-        "entity.TranslationHistory": {
+        "entity.CommentsList": {
             "type": "object",
             "properties": {
-                "history": {
+                "comment": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.Translation"
+                        "$ref": "#/definitions/entity.Comment"
                     }
                 }
             }
         },
-        "request.Translate": {
+        "request.Comment": {
             "type": "object",
             "required": [
-                "destination",
-                "original",
-                "source"
+                "created_by",
+                "entity_id",
+                "entity_type",
+                "text"
             ],
             "properties": {
-                "destination": {
+                "created_by": {
                     "type": "string",
-                    "example": "en"
+                    "example": "user_kek"
                 },
-                "original": {
+                "entity_id": {
                     "type": "string",
-                    "example": "текст для перевода"
+                    "example": "shot_12"
                 },
-                "source": {
+                "entity_type": {
                     "type": "string",
-                    "example": "auto"
+                    "example": "shot"
+                },
+                "text": {
+                    "type": "string",
+                    "example": "good job"
                 }
             }
         },
@@ -167,7 +168,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/v1",
 	Schemes:          []string{},
 	Title:            "Go Clean Template API",
-	Description:      "Using a translation service as an example",
+	Description:      "Using a comment service as an example",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

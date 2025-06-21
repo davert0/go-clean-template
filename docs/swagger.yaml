@@ -1,42 +1,42 @@
 basePath: /v1
 definitions:
-  entity.Translation:
+  entity.Comment:
     properties:
-      destination:
-        example: en
+      created_at:
         type: string
-      original:
-        example: текст для перевода
+      created_by:
         type: string
-      source:
-        example: auto
-        type: string
-      translation:
-        example: text for translation
+      entity_ref_id:
+        type: integer
+      text:
         type: string
     type: object
-  entity.TranslationHistory:
+  entity.CommentsList:
     properties:
-      history:
+      comment:
         items:
-          $ref: '#/definitions/entity.Translation'
+          $ref: '#/definitions/entity.Comment'
         type: array
     type: object
-  request.Translate:
+  request.Comment:
     properties:
-      destination:
-        example: en
+      created_by:
+        example: user_kek
         type: string
-      original:
-        example: текст для перевода
+      entity_id:
+        example: shot_12
         type: string
-      source:
-        example: auto
+      entity_type:
+        example: shot
+        type: string
+      text:
+        example: good job
         type: string
     required:
-    - destination
-    - original
-    - source
+    - created_by
+    - entity_id
+    - entity_type
+    - text
     type: object
   response.Error:
     properties:
@@ -47,30 +47,50 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: Using a translation service as an example
+  description: Using a comment service as an example
   title: Go Clean Template API
   version: "1.0"
 paths:
-  /translation/do-translate:
-    post:
+  /comment/comments:
+    get:
       consumes:
       - application/json
-      description: Translate a text
-      operationId: do-translate
-      parameters:
-      - description: Set up translation
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/request.Translate'
+      description: Show all comments
+      operationId: comments
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.Translation'
+            $ref: '#/definitions/entity.CommentsList'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Show comments
+      tags:
+      - comment
+  /comments/do-comment:
+    post:
+      consumes:
+      - application/json
+      description: Comment a entity
+      operationId: do-comment
+      parameters:
+      - description: Set up comment
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.Comment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Comment'
         "400":
           description: Bad Request
           schema:
@@ -79,27 +99,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/response.Error'
-      summary: Translate
+      summary: Comment
       tags:
-      - translation
-  /translation/history:
-    get:
-      consumes:
-      - application/json
-      description: Show all translation history
-      operationId: history
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/entity.TranslationHistory'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Error'
-      summary: Show history
-      tags:
-      - translation
+      - comment
 swagger: "2.0"
