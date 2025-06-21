@@ -51,7 +51,7 @@ info:
   title: Go Clean Template API
   version: "1.0"
 paths:
-  /translation/do-translate:
+  /comment/do-comment:
     post:
       consumes:
       - application/json

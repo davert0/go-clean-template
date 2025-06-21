@@ -19,14 +19,14 @@ import (
 // @Failure     500 {object} response.Error
 // @Router      /comment/comments [get]
 func (r *V1) comments(ctx *fiber.Ctx) error {
-	translationHistory, err := r.t.History(ctx.UserContext())
+	commentsHistory, err := r.t.History(ctx.UserContext())
 	if err != nil {
 		r.l.Error(err, "http - v2 - comments")
 
 		return errorResponse(ctx, http.StatusInternalServerError, "database problems")
 	}
 
-	return ctx.Status(http.StatusOK).JSON(translationHistory)
+	return ctx.Status(http.StatusOK).JSON(commentsHistory)
 }
 
 // @Summary     Comment
