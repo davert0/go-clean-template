@@ -2,7 +2,7 @@
 // HTTP response objects if suitable. Each logic group entities in own file.
 package entity
 
-// CommentsHistory -.
-type CommentsHistory struct {
+// CommentsList -.
+type CommentsList struct {
 	Comments []Comment `json:"comment"`
 }

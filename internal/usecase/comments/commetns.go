@@ -21,13 +21,13 @@ func New(r repo.CommentsRepo) *UseCase {
 }
 
 // History - getting comments history from store.
-func (uc *UseCase) History(ctx context.Context) (entity.CommentsHistory, error) {
+func (uc *UseCase) History(ctx context.Context) (entity.CommentsList, error) {
 	comments, err := uc.repo.GetComments(ctx)
 	if err != nil {
-		return entity.CommentsHistory{}, fmt.Errorf("CommentsUseCase - History - s.repo.GetComments: %w", err)
+		return entity.CommentsList{}, fmt.Errorf("CommentsUseCase - History - s.repo.GetComments: %w", err)
 	}
 
-	return entity.CommentsHistory{Comments: comments}, nil
+	return entity.CommentsList{Comments: comments}, nil
 }
 
 // Comment -.

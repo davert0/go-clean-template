@@ -15,9 +15,39 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/comment/do-comment": {
+        "/comment/comments": {
+            "get": {
+                "description": "Show all comments",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comment"
+                ],
+                "summary": "Show comments",
+                "operationId": "comments",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.CommentsList"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/response.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/comments/do-comment": {
             "post": {
-                "description": "Comment some entity",
+                "description": "Comment a entity",
                 "consumes": [
                     "application/json"
                 ],
@@ -61,64 +91,30 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/comment/comments": {
-            "get": {
-                "description": "Show all comments",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "comment"
-                ],
-                "summary": "Show all comments",
-                "operationId": "comment",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/entity.CommentHistory"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/response.Error"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
         "entity.Comment": {
             "type": "object",
             "properties": {
-                "text": {
-                    "type": "string",
-                    "example": "good job"
+                "created_at": {
+                    "type": "string"
                 },
                 "created_by": {
-                    "type": "string",
-                    "example": "boss"
-                },
-                "created_at": {
-                    "type": "time",
-                    "example": "2025...."
+                    "type": "string"
                 },
                 "entity_ref_id": {
-                    "type": "bigint",
-                    "example": "12"
+                    "type": "integer"
+                },
+                "text": {
+                    "type": "string"
                 }
             }
         },
-        "entity.CommentHistory": {
+        "entity.CommentsList": {
             "type": "object",
             "properties": {
-                "comments": {
+                "comment": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/entity.Comment"
@@ -126,25 +122,30 @@ const docTemplate = `{
                 }
             }
         },
-        "request.Translate": {
+        "request.Comment": {
             "type": "object",
             "required": [
-                "destination",
-                "original",
-                "source"
+                "created_by",
+                "entity_id",
+                "entity_type",
+                "text"
             ],
             "properties": {
+                "created_by": {
+                    "type": "string",
+                    "example": "user_kek"
+                },
+                "entity_id": {
+                    "type": "string",
+                    "example": "shot_12"
+                },
+                "entity_type": {
+                    "type": "string",
+                    "example": "shot"
+                },
                 "text": {
                     "type": "string",
-                    "example": "kek"
-                },
-                "original": {
-                    "type": "string",
-                    "example": "текст для перевода"
-                },
-                "source": {
-                    "type": "string",
-                    "example": "auto"
+                    "example": "good job"
                 }
             }
         },

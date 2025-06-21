@@ -2,41 +2,41 @@ basePath: /v1
 definitions:
   entity.Comment:
     properties:
-      text:
-        example: good
+      created_at:
         type: string
       created_by:
-        example: boss
         type: string
-      entity_id:
-        example: video_123
-        type: string
-      entity_type:
-        example: video
+      entity_ref_id:
+        type: integer
+      text:
         type: string
     type: object
-  entity.CommentHistory:
+  entity.CommentsList:
     properties:
-      history:
+      comment:
         items:
           $ref: '#/definitions/entity.Comment'
         type: array
     type: object
-  request.Translate:
+  request.Comment:
     properties:
-      destination:
-        example: en
+      created_by:
+        example: user_kek
         type: string
-      original:
-        example: текст для перевода
+      entity_id:
+        example: shot_12
         type: string
-      source:
-        example: auto
+      entity_type:
+        example: shot
+        type: string
+      text:
+        example: good job
         type: string
     required:
-    - destination
-    - original
-    - source
+    - created_by
+    - entity_id
+    - entity_type
+    - text
     type: object
   response.Error:
     properties:
@@ -47,15 +47,35 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: Using a Comment service as an example
+  description: Using a comment service as an example
   title: Go Clean Template API
   version: "1.0"
 paths:
-  /comment/do-comment:
+  /comment/comments:
+    get:
+      consumes:
+      - application/json
+      description: Show all comments
+      operationId: comments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.CommentsList'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/response.Error'
+      summary: Show comments
+      tags:
+      - comment
+  /comments/do-comment:
     post:
       consumes:
       - application/json
-      description: Comment some entity
+      description: Comment a entity
       operationId: do-comment
       parameters:
       - description: Set up comment
@@ -82,24 +102,4 @@ paths:
       summary: Comment
       tags:
       - comment
-  /comment/comments:
-    get:
-      consumes:
-      - application/json
-      description: Show all comments
-      operationId: comments
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/entity.CommentHistory'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/response.Error'
-      summary: Show comments
-      tags:
-      - translation
 swagger: "2.0"
