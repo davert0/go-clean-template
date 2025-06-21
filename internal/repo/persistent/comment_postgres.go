@@ -8,6 +8,7 @@ import (
 	"github.com/Masterminds/squirrel"
 	"github.com/evrone/go-clean-template/internal/entity"
 	"github.com/evrone/go-clean-template/pkg/postgres"
+	"github.com/jackc/pgx/v5"
 )
 
 const _defaultEntityCap = 64
@@ -88,12 +89,10 @@ func (r *CommentsRepo) DoComment(ctx context.Context, c entity.Comment, e entity
 	if err != nil {
 		return c, fmt.Errorf("CommentsRepo - DoComment - r.Builder: %w", err)
 	}
-	err = r.Pool.QueryRow(ctx, sql, args...).Scan(&entityRefID)
 
-	if err == nil {
-		c.EntityRefID = entityRefID
-		return c, nil
-	} else {
+	err = r.Pool.QueryRow(ctx, sql, args...).Scan(&entityRefID)
+	switch err {
+	case pgx.ErrNoRows:
 		sql, args, err := r.Builder.
 			Insert("entity").
 			Columns("entity_id", "entity_type").
@@ -108,6 +107,11 @@ func (r *CommentsRepo) DoComment(ctx context.Context, c entity.Comment, e entity
 			c.EntityRefID = entityRefID
 			return c, nil
 		}
+		return c, err
+	case nil:
+		c.EntityRefID = entityRefID
+		return c, nil
+	default:
 		return c, err
 	}
 }
