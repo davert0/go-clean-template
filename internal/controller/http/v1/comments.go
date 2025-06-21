@@ -15,7 +15,7 @@ import (
 // @Tags  	    comment
 // @Accept      json
 // @Produce     json
-// @Success     200 {object} entity.CommentHistory
+// @Success     200 {object} entity.CommentsHistory
 // @Failure     500 {object} response.Error
 // @Router      /comment/comments [get]
 func (r *V1) comments(ctx *fiber.Ctx) error {
