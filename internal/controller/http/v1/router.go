@@ -9,12 +9,12 @@ import (
 
 // NewTranslationRoutes -.
 func NewTranslationRoutes(apiV1Group fiber.Router, c usecase.Comment, l logger.Interface) {
-	r := &V1{t: c, l: l, v: validator.New(validator.WithRequiredStructEnabled())}
+	router := &V1{comment: c, logger: l, validator: validator.New(validator.WithRequiredStructEnabled())}
 
 	commentGroup := apiV1Group.Group("/comment")
 
 	{
-		commentGroup.Get("/comments", r.comments)
-		commentGroup.Post("/do-comment", r.doComment)
+		commentGroup.Get("/comments", router.comments)
+		commentGroup.Post("/do-comment", router.doComment)
 	}
 }

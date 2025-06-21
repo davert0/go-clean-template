@@ -18,10 +18,10 @@ import (
 // @Success     200 {object} entity.CommentsHistory
 // @Failure     500 {object} response.Error
 // @Router      /comment/comments [get]
-func (r *V1) comments(ctx *fiber.Ctx) error {
-	commentsHistory, err := r.t.History(ctx.UserContext())
+func (router *V1) comments(ctx *fiber.Ctx) error {
+	commentsHistory, err := router.comment.History(ctx.UserContext())
 	if err != nil {
-		r.l.Error(err, "http - v2 - comments")
+		router.logger.Error(err, "http - v2 - comments")
 
 		return errorResponse(ctx, http.StatusInternalServerError, "database problems")
 	}
@@ -40,22 +40,22 @@ func (r *V1) comments(ctx *fiber.Ctx) error {
 // @Failure     400 {object} response.Error
 // @Failure     500 {object} response.Error
 // @Router      /comments/do-comment [post]
-func (r *V1) doComment(ctx *fiber.Ctx) error {
+func (router *V1) doComment(ctx *fiber.Ctx) error {
 	var body request.Comment
 
 	if err := ctx.BodyParser(&body); err != nil {
-		r.l.Error(err, "http - v1 - doComment")
+		router.logger.Error(err, "http - v1 - doComment")
 
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}
 
-	if err := r.v.Struct(body); err != nil {
-		r.l.Error(err, "http - v1 - doComment")
+	if err := router.validator.Struct(body); err != nil {
+		router.logger.Error(err, "http - v1 - doComment")
 
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}
 
-	comment, err := r.t.Comment(
+	comment, err := router.comment.Comment(
 		ctx.UserContext(),
 		entity.Comment{
 			Text:      body.Text,
@@ -67,7 +67,7 @@ func (r *V1) doComment(ctx *fiber.Ctx) error {
 		},
 	)
 	if err != nil {
-		r.l.Error(err, "http - v1 - doComment")
+		router.logger.Error(err, "http - v1 - doComment")
 
 		return errorResponse(ctx, http.StatusInternalServerError, fmt.Sprintf("comment service problems %s", err))
 	}
