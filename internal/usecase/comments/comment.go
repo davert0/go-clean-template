@@ -8,7 +8,7 @@ import (
 )
 
 // Comment -.
-func (uc *UseCase) Comment(ctx context.Context, c entity.Comment, e entity.Entity) (entity.Comment, error) {
+func (uc *UseCase) CreateComment(ctx context.Context, c entity.Comment, e entity.Entity) (entity.Comment, error) {
 	comment, err := uc.repo.DoComment(ctx, c, e)
 	if err != nil {
 		return entity.Comment{}, fmt.Errorf("CommentUseCase - Comment - DoComment: %w", err)

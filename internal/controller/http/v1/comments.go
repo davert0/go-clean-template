@@ -55,7 +55,7 @@ func (router *V1) doComment(ctx *fiber.Ctx) error {
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}
 
-	comment, err := router.comment.Comment(
+	comment, err := router.comment.CreateComment(
 		ctx.UserContext(),
 		entity.Comment{
 			Text:      body.Text,
