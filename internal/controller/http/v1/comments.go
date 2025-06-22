@@ -18,10 +18,30 @@ import (
 // @Success     200 {object} entity.CommentsList
 // @Failure     500 {object} response.Error
 // @Router      /comment/comments [get]
-func (router *V1) comments(ctx *fiber.Ctx) error {
-	commentsHistory, err := router.comment.History(ctx.UserContext())
+func (router *V1) getComments(ctx *fiber.Ctx) error {
+	var body request.Entity
+
+	if err := ctx.BodyParser(&body); err != nil {
+		router.logger.Error(err, "http - v1 - getComments")
+
+		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
+	}
+
+	if err := router.validator.Struct(body); err != nil {
+		router.logger.Error(err, "http - v1 - getComments")
+
+		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
+	}
+
+	commentsHistory, err := router.comment.GetComments(ctx.UserContext(),
+		entity.Entity{
+			EntityID:   body.EntityID,
+			EntityType: body.EntityType,
+		},
+	)
+
 	if err != nil {
-		router.logger.Error(err, "http - v2 - comments")
+		router.logger.Error(err, "http - v1 - comments")
 
 		return errorResponse(ctx, http.StatusInternalServerError, "database problems")
 	}

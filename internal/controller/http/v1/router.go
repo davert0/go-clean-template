@@ -14,7 +14,7 @@ func NewTranslationRoutes(apiV1Group fiber.Router, c usecase.Comment, l logger.I
 	commentGroup := apiV1Group.Group("/comment")
 
 	{
-		commentGroup.Get("/comments", router.comments)
+		commentGroup.Get("/comments", router.getComments)
 		commentGroup.Post("/do-comment", router.doComment)
 	}
 }

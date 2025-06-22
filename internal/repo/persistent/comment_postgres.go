@@ -24,19 +24,42 @@ func New(pg *postgres.Postgres) *CommentsRepo {
 }
 
 // GetComments -.
-func (r *CommentsRepo) GetComments(ctx context.Context) ([]entity.Comment, error) {
-	sql, _, err := r.Builder.
+func (r *CommentsRepo) GetComments(ctx context.Context, e entity.Entity) ([]entity.Comment, error) {
+	var entityRefID int64
+	sql, args, err := r.Builder.
+		Select("id").
+		From("entity").
+		Where(squirrel.Eq{
+			"entity_id":   e.EntityID,
+			"entity_type": e.EntityType,
+		}).
+		ToSql()
+	if err != nil {
+		return nil, fmt.Errorf("CommentsRepo - GetComments - r.Builder: %w", err)
+	}
+	err = r.Pool.QueryRow(ctx, sql, args...).Scan(&entityRefID)
+	fmt.Println("get_ref_id")
+	if err == pgx.ErrNoRows {
+		return nil, fmt.Errorf("CommentsRepo - GetComments - r.Pool.QueryRow: %w", err)
+	}
+	fmt.Println("has_ref_id")
+
+	sql, args, err = r.Builder.
 		Select("entity_ref_id, text, created_by, created_at").
 		From("comment").
+		Where(squirrel.Eq{
+			"entity_ref_id": entityRefID,
+		}).
 		ToSql()
 	if err != nil {
 		return nil, fmt.Errorf("CommentsRepo - GetComments - r.Builder: %w", err)
 	}
 
-	rows, err := r.Pool.Query(ctx, sql)
+	rows, err := r.Pool.Query(ctx, sql, args...)
 	if err != nil {
 		return nil, fmt.Errorf("CommentsRepo - GetComments - r.Pool.Query: %w", err)
 	}
+	fmt.Println("a_tut")
 	defer rows.Close()
 
 	entities := make([]entity.Comment, 0, _defaultEntityCap)

@@ -12,6 +12,6 @@ import (
 type (
 	Comment interface {
 		CreateComment(context.Context, entity.Comment, entity.Entity) (entity.Comment, error)
-		History(context.Context) (entity.CommentsList, error)
+		GetComments(context.Context, entity.Entity) (entity.CommentsList, error)
 	}
 )

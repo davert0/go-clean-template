@@ -8,10 +8,10 @@ import (
 )
 
 // NewTranslationRoutes -.
-func NewTranslationRoutes(routes map[string]server.CallHandler, t usecase.Comment, l logger.Interface) {
-	r := &V1{t: t, l: l, v: validator.New(validator.WithRequiredStructEnabled())}
+func NewTranslationRoutes(routes map[string]server.CallHandler, c usecase.Comment, l logger.Interface) {
+	r := &V1{comment: c, logger: l, validator: validator.New(validator.WithRequiredStructEnabled())}
 
 	{
-		routes["v1.getHistory"] = r.getComments()
+		routes["v1.getComments"] = r.getComments()
 	}
 }
