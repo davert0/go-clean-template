@@ -23,7 +23,7 @@ func New(pg *postgres.Postgres) *CommentsRepo {
 	return &CommentsRepo{pg}
 }
 
-// GetHistory -.
+// GetComments -.
 func (r *CommentsRepo) GetComments(ctx context.Context) ([]entity.Comment, error) {
 	sql, _, err := r.Builder.
 		Select("entity_ref_id, text, created_by, created_at").
@@ -55,28 +55,33 @@ func (r *CommentsRepo) GetComments(ctx context.Context) ([]entity.Comment, error
 	return entities, nil
 }
 
-// Store -.
-func (r *CommentsRepo) Store(ctx context.Context, c entity.Comment) error {
+// CreateComment -.
+func (r *CommentsRepo) CreateComment(ctx context.Context, c entity.Comment, e entity.Entity) (entity.Comment, error) {
+	c.CreatedAt = time.Now()
+	entityRefID, err := r.getOrCreateIntityRefID(ctx, e)
+	if err != nil {
+		return c, fmt.Errorf("CommentsRepo - CreateComment - r.getOrCreateIntityRefID: %w", err)
+	}
+
+	c.EntityRefID = entityRefID
 	sql, args, err := r.Builder.
 		Insert("comment").
 		Columns("text, created_by, created_at, entity_ref_id").
 		Values(c.Text, c.CreatedBy, c.CreatedAt, c.EntityRefID).
 		ToSql()
 	if err != nil {
-		return fmt.Errorf("CommentsRepo - Store - r.Builder: %w", err)
+		return c, fmt.Errorf("CommentsRepo - Store - r.Builder: %w", err)
 	}
 
 	_, err = r.Pool.Exec(ctx, sql, args...)
 	if err != nil {
-		return fmt.Errorf("CommentsRepo - Store - r.Pool.Exec: %w", err)
+		return c, fmt.Errorf("CommentsRepo - Store - r.Pool.Exec: %w", err)
 	}
 
-	return nil
+	return c, nil
 }
 
-func (r *CommentsRepo) DoComment(ctx context.Context, c entity.Comment, e entity.Entity) (entity.Comment, error) {
-	c.CreatedAt = time.Now()
-
+func (r *CommentsRepo) getOrCreateIntityRefID(ctx context.Context, e entity.Entity) (int64, error) {
 	var entityRefID int64
 	sql, args, err := r.Builder.
 		Select("id").
@@ -87,7 +92,7 @@ func (r *CommentsRepo) DoComment(ctx context.Context, c entity.Comment, e entity
 		}).
 		ToSql()
 	if err != nil {
-		return c, fmt.Errorf("CommentsRepo - DoComment - r.Builder: %w", err)
+		return -1, fmt.Errorf("CommentsRepo - DoComment - r.Builder: %w", err)
 	}
 
 	err = r.Pool.QueryRow(ctx, sql, args...).Scan(&entityRefID)
@@ -100,18 +105,16 @@ func (r *CommentsRepo) DoComment(ctx context.Context, c entity.Comment, e entity
 			Suffix("RETURNING id").
 			ToSql()
 		if err != nil {
-			return c, fmt.Errorf("CommentsRepo - DoComment - r.Builder: %w", err)
+			return -1, fmt.Errorf("CommentsRepo - DoComment - r.Builder: %w", err)
 		}
 		err = r.Pool.QueryRow(ctx, sql, args...).Scan(&entityRefID)
 		if err == nil {
-			c.EntityRefID = entityRefID
-			return c, nil
+			return entityRefID, nil
 		}
-		return c, err
+		return -1, err
 	case nil:
-		c.EntityRefID = entityRefID
-		return c, nil
+		return entityRefID, nil
 	default:
-		return c, err
+		return -1, err
 	}
 }
