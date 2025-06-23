@@ -19,7 +19,7 @@ import (
 // @Failure     500 {object} response.Error
 // @Router      /comment/comments [get]
 func (router *V1) comments(ctx *fiber.Ctx) error {
-	commentsHistory, err := router.comment.History(ctx.UserContext())
+	commentsHistory, err := router.getUC.History(ctx.UserContext())
 	if err != nil {
 		router.logger.Error(err, "http - v2 - comments")
 
@@ -55,7 +55,7 @@ func (router *V1) doComment(ctx *fiber.Ctx) error {
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}
 
-	comment, err := router.comment.CreateComment(
+	comment, err := router.createUC.CreateComment(
 		ctx.UserContext(),
 		entity.Comment{
 			Text:      body.Text,

@@ -10,9 +10,9 @@ import (
 
 func (r *V1) getComments() server.CallHandler {
 	return func(_ *amqp.Delivery) (interface{}, error) {
-		translationHistory, err := r.t.History(context.Background())
+		translationHistory, err := r.getUC.History(context.Background())
 		if err != nil {
-			r.l.Error(err, "amqp_rpc - V1 - getHistory")
+			r.logger.Error(err, "amqp_rpc - V1 - getHistory")
 
 			return nil, fmt.Errorf("amqp_rpc - V1 - getHistory: %w", err)
 		}
