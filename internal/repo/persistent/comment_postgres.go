@@ -38,11 +38,10 @@ func (r *CommentsRepo) GetComments(ctx context.Context, e entity.Entity) ([]enti
 		return nil, fmt.Errorf("CommentsRepo - GetComments - r.Builder: %w", err)
 	}
 	err = r.Pool.QueryRow(ctx, sql, args...).Scan(&entityRefID)
-	fmt.Println("get_ref_id")
+
 	if err == pgx.ErrNoRows {
 		return nil, fmt.Errorf("CommentsRepo - GetComments - r.Pool.QueryRow: %w", err)
 	}
-	fmt.Println("has_ref_id")
 
 	sql, args, err = r.Builder.
 		Select("entity_ref_id, text, created_by, created_at").
@@ -59,7 +58,6 @@ func (r *CommentsRepo) GetComments(ctx context.Context, e entity.Entity) ([]enti
 	if err != nil {
 		return nil, fmt.Errorf("CommentsRepo - GetComments - r.Pool.Query: %w", err)
 	}
-	fmt.Println("a_tut")
 	defer rows.Close()
 
 	entities := make([]entity.Comment, 0, _defaultEntityCap)
