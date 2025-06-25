@@ -1,4 +1,4 @@
-package comments
+package create
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"github.com/evrone/go-clean-template/internal/entity"
 )
 
-// Comment -.
+// CreateComment -.
 func (uc *UseCase) CreateComment(ctx context.Context, c entity.Comment, e entity.Entity) (entity.Comment, error) {
 	comment, err := uc.repo.CreateComment(ctx, c, e)
 	if err != nil {

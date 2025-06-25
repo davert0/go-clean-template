@@ -34,7 +34,7 @@ func (router *V1) getComments(ctx *fiber.Ctx) error {
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}
 
-	commentsHistory, err := router.comment.GetComments(ctx.UserContext(),
+	commentsHistory, err := router.getUC.GetComments(ctx.UserContext(),
 		entity.Entity{
 			EntityID:   body.EntityID,
 			EntityType: body.EntityType,
@@ -79,7 +79,7 @@ func (router *V1) doComment(ctx *fiber.Ctx) error {
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}
 
-	comment, err := router.comment.CreateComment(
+	comment, err := router.createUC.CreateComment(
 		ctx.UserContext(),
 		entity.Comment{
 			Text:      body.Text,

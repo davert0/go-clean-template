@@ -11,7 +11,8 @@ import (
 	amqprpc "github.com/evrone/go-clean-template/internal/controller/amqp_rpc"
 	"github.com/evrone/go-clean-template/internal/controller/http"
 	"github.com/evrone/go-clean-template/internal/repo/persistent"
-	"github.com/evrone/go-clean-template/internal/usecase/comments"
+	"github.com/evrone/go-clean-template/internal/usecase/comment/create"
+	"github.com/evrone/go-clean-template/internal/usecase/comment/history"
 	"github.com/evrone/go-clean-template/pkg/httpserver"
 	"github.com/evrone/go-clean-template/pkg/logger"
 	"github.com/evrone/go-clean-template/pkg/postgres"
@@ -29,12 +30,16 @@ func Run(cfg *config.Config) {
 	}
 	defer pg.Close()
 
-	commentsUseCase := comments.New(
+	createUseCase := create.New(
+		persistent.New(pg),
+	)
+
+	historyUseCase := history.New(
 		persistent.New(pg),
 	)
 
 	// RabbitMQ RPC Server
-	rmqRouter := amqprpc.NewRouter(commentsUseCase, l)
+	rmqRouter := amqprpc.NewRouter(*createUseCase, *historyUseCase, l)
 
 	rmqServer, err := server.New(cfg.RMQ.URL, cfg.RMQ.ServerExchange, rmqRouter, l)
 	if err != nil {
@@ -43,7 +48,7 @@ func Run(cfg *config.Config) {
 
 	// HTTP Server
 	httpServer := httpserver.New(httpserver.Port(cfg.HTTP.Port), httpserver.Prefork(cfg.HTTP.UsePreforkMode))
-	http.NewRouter(httpServer.App, cfg, commentsUseCase, l)
+	http.NewRouter(httpServer.App, cfg, *createUseCase, *historyUseCase, l)
 
 	// Start servers
 	rmqServer.Start()

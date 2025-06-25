@@ -7,7 +7,7 @@ import (
 
 func (r *V1) getComments() server.CallHandler {
 	return func(_ *amqp.Delivery) (interface{}, error) {
-		// commentsHistory, err := r.comment.GetComments(context.Background())
+		//translationHistory, err := r.getUC.GetComments(context.Background())
 		// if err != nil {
 		// 	r.logger.Error(err, "amqp_rpc - V1 - GetComments")
 
