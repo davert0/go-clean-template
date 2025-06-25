@@ -14,5 +14,5 @@ func (uc *UseCase) GetComments(ctx context.Context, e entity.Entity) (entity.Com
 		return entity.CommentsList{}, fmt.Errorf("CommentsUseCase - History - s.repo.GetComments: %w", err)
 	}
 
-	return entity.CommentsList{Comments: comments}, nil
+	return entity.CommentsList{EntityID: e.EntityID, EntityType: e.EntityType, Comments: comments}, nil
 }
