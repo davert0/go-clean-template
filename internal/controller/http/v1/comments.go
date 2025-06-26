@@ -58,7 +58,7 @@ func (router *V1) getComments(ctx *fiber.Ctx) error {
 
 // @Summary     Comment
 // @Description Comment a entity
-// @ID          do-comment
+// @ID          create-comment
 // @Tags  	    comment
 // @Accept      json
 // @Produce     json
@@ -66,18 +66,18 @@ func (router *V1) getComments(ctx *fiber.Ctx) error {
 // @Success     200 {object} entity.Comment
 // @Failure     400 {object} response.Error
 // @Failure     500 {object} response.Error
-// @Router      /comments/do-comment [post]
-func (router *V1) doComment(ctx *fiber.Ctx) error {
+// @Router      /comments/create-comment [post]
+func (router *V1) createComment(ctx *fiber.Ctx) error {
 	var body request.Comment
 
 	if err := ctx.BodyParser(&body); err != nil {
-		router.logger.Error(err, "http - v1 - doComment")
+		router.logger.Error(err, "http - v1 - createComment")
 
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}
 
 	if err := router.validator.Struct(body); err != nil {
-		router.logger.Error(err, "http - v1 - doComment")
+		router.logger.Error(err, "http - v1 - createComment")
 
 		return errorResponse(ctx, http.StatusBadRequest, "invalid request body")
 	}

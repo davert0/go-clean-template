@@ -16,6 +16,6 @@ func NewCommentRoutes(apiV1Group fiber.Router, c create.UseCase, g get.UseCase, 
 
 	{
 		commentGroup.Get("/comments", router.getComments)
-		commentGroup.Post("/do-comment", router.doComment)
+		commentGroup.Post("/create-comment", router.createComment)
 	}
 }
