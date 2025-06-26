@@ -11,6 +11,6 @@ type (
 	// CommentsRepo -.
 	CommentsRepo interface {
 		CreateComment(context.Context, entity.Comment, entity.Entity) (entity.Comment, error)
-		GetComments(context.Context, entity.Entity, string) ([]entity.Comment, error)
+		GetComments(context.Context, entity.Entity, int, int, string) ([]entity.Comment, error)
 	}
 )
