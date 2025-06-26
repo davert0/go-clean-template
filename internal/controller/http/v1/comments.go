@@ -39,6 +39,7 @@ func (router *V1) getComments(ctx *fiber.Ctx) error {
 			EntityID:   body.EntityID,
 			EntityType: body.EntityType,
 		},
+		body.OrderBy,
 	)
 
 	if err != nil {

@@ -8,8 +8,8 @@ import (
 )
 
 // GetComments - getting all comments history from store fore entity.
-func (uc *UseCase) GetComments(ctx context.Context, e entity.Entity) (entity.CommentsList, error) {
-	comments, err := uc.repo.GetComments(ctx, e)
+func (uc *UseCase) GetComments(ctx context.Context, e entity.Entity, orderBy string) (entity.CommentsList, error) {
+	comments, err := uc.repo.GetComments(ctx, e, orderBy)
 	if err != nil {
 		return entity.CommentsList{}, fmt.Errorf("CommentsUseCase - GetComments - uc.repo.GetComments: %w", err)
 	}
