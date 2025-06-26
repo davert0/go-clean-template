@@ -1,9 +1,9 @@
 package v1
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/evrone/go-clean-template/internal/controller/http/v1/request"
 	"github.com/evrone/go-clean-template/internal/entity"
@@ -43,7 +43,7 @@ func (router *V1) getComments(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		router.logger.Error(err, "http - v1 - comments")
-		if strings.Contains(err.Error(), "no rows in result set") {
+		if errors.Is(err, entity.ErrEntityNotFound) {
 			return errorResponse(ctx, http.StatusInternalServerError, "Entity not found")
 		}
 

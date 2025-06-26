@@ -40,7 +40,7 @@ func (r *CommentsRepo) GetComments(ctx context.Context, e entity.Entity) ([]enti
 	err = r.Pool.QueryRow(ctx, sql, args...).Scan(&entityRefID)
 
 	if err == pgx.ErrNoRows {
-		return nil, fmt.Errorf("CommentsRepo - GetComments - r.Pool.QueryRow: %w", err)
+		return nil, fmt.Errorf("CommentsRepo - GetComments - r.Pool.QueryRow: %w", entity.ErrEntityNotFound)
 	}
 
 	sql, args, err = r.Builder.
