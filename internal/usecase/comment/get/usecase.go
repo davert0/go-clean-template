@@ -1,4 +1,4 @@
-package history
+package get
 
 import (
 	"github.com/evrone/go-clean-template/internal/repo"
