@@ -12,7 +12,7 @@ import (
 	"github.com/evrone/go-clean-template/internal/controller/http"
 	"github.com/evrone/go-clean-template/internal/repo/persistent"
 	"github.com/evrone/go-clean-template/internal/usecase/comment/create"
-	"github.com/evrone/go-clean-template/internal/usecase/comment/history"
+	"github.com/evrone/go-clean-template/internal/usecase/comment/get"
 	"github.com/evrone/go-clean-template/pkg/httpserver"
 	"github.com/evrone/go-clean-template/pkg/logger"
 	"github.com/evrone/go-clean-template/pkg/postgres"
@@ -34,7 +34,7 @@ func Run(cfg *config.Config) {
 		persistent.New(pg),
 	)
 
-	historyUseCase := history.New(
+	historyUseCase := get.New(
 		persistent.New(pg),
 	)
 

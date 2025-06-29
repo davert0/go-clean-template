@@ -3,6 +3,7 @@ package persistent
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/Masterminds/squirrel"
@@ -24,16 +25,54 @@ func New(pg *postgres.Postgres) *CommentsRepo {
 }
 
 // GetComments -.
-func (r *CommentsRepo) GetComments(ctx context.Context) ([]entity.Comment, error) {
-	sql, _, err := r.Builder.
-		Select("entity_ref_id, text, created_by, created_at").
-		From("comment").
+func (r *CommentsRepo) GetComments(ctx context.Context, e entity.Entity, limit int, offset int, orderBy string) ([]entity.Comment, error) {
+	var entityRefID int64
+	sql, args, err := r.Builder.
+		Select("id").
+		From("entity").
+		Where(squirrel.Eq{
+			"entity_id":   e.EntityID,
+			"entity_type": e.EntityType,
+		}).
 		ToSql()
 	if err != nil {
 		return nil, fmt.Errorf("CommentsRepo - GetComments - r.Builder: %w", err)
 	}
+	err = r.Pool.QueryRow(ctx, sql, args...).Scan(&entityRefID)
 
-	rows, err := r.Pool.Query(ctx, sql)
+	if err == pgx.ErrNoRows {
+		return nil, fmt.Errorf("CommentsRepo - GetComments - r.Pool.QueryRow: %w", entity.ErrEntityNotFound)
+	}
+
+	queryBuilder := r.Builder.
+		Select("entity_ref_id", "text", "created_by", "created_at").
+		From("comment").
+		Where(squirrel.Eq{"entity_ref_id": entityRefID})
+
+	if orderBy != "" {
+		orderBy = strings.ToUpper(string(orderBy))
+		if orderBy == "ASC" || orderBy == "DESC" {
+			queryBuilder = queryBuilder.OrderBy("created_at " + orderBy)
+		} else {
+			queryBuilder = queryBuilder.OrderBy("created_at DESC")
+		}
+	} else {
+		queryBuilder = queryBuilder.OrderBy("created_at DESC")
+	}
+
+	if limit > 0 {
+		queryBuilder = queryBuilder.Limit(uint64(limit))
+	}
+	if offset > 0 {
+		queryBuilder = queryBuilder.Offset(uint64(offset))
+	}
+
+	sql, args, err = queryBuilder.ToSql()
+	if err != nil {
+		return nil, fmt.Errorf("CommentsRepo - GetComments - r.Builder: %w", err)
+	}
+
+	rows, err := r.Pool.Query(ctx, sql, args...)
 	if err != nil {
 		return nil, fmt.Errorf("CommentsRepo - GetComments - r.Pool.Query: %w", err)
 	}

@@ -4,5 +4,7 @@ package entity
 
 // CommentsList -.
 type CommentsList struct {
-	Comments []Comment `json:"comment"`
+	EntityID   string    `json:"entity_id"`
+	EntityType string    `json:"entity_type"`
+	Comments   []Comment `json:"comment"`
 }
